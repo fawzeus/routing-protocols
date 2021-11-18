@@ -37,20 +37,20 @@ void printSolution(int dist[] , int number_of_nodes)
 void dijkstra(int src , int number_of_nodes)
 {
     int V = number_of_nodes+1;
+    vector<string> path ;
     int dist[V]; // The output array.  dist[i] will hold the shortest
     // distance from src to i
-    
-    //shortest path
-    vector<string> paths; 
  
     bool sptSet[V]; // sptSet[i] will be true if vertex i is included in shortest
     // path tree or shortest distance from src to i is finalized
  
     // Initialize all distances as INFINITE and stpSet[] as false
-    for (int i = 0; i < V; i++){
+    
+    for (int i = 1; i < V; i++){
         dist[i] = INT_MAX, sptSet[i] = false;
-        paths.push_back(to_string(src));
+        path.push_back("");
     }
+    
  
     // Distance of source vertex from itself is always 0
     dist[src] = 0;
@@ -65,7 +65,7 @@ void dijkstra(int src , int number_of_nodes)
         sptSet[u] = true;
  
         // Update dist value of the adjacent vertices of the picked vertex.
-        for (int v = 0; v < V; v++)
+        for (int v = 1; v < V; v++)
  
             // Update dist[v] only if is not in sptSet, there is an edge from
             // u to v, and total weight of path from src to  v through u is
@@ -73,14 +73,17 @@ void dijkstra(int src , int number_of_nodes)
             if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX
                 && dist[u] + graph[u][v] < dist[v]){
                 dist[v] = dist[u] + graph[u][v];
-                paths[v-1]+= to_string(u);
+                cout<<"path u-1 "<<path[u-1]<<" u "<<u<<endl; 
+                path[v-1]= path[u-1]+to_string(u);
                 }
     }
+    path[src-1]=to_string(src);
     // print the constructed distance array
     printSolution(dist,number_of_nodes);
-    
-    puts("paths\n\n");
-    
+    puts("path\n\n");
+    for(int i=0;i<path.size();i++){
+        cout<<path[i]<<endl;
+    }
 }
 
 /*******************************************/
@@ -127,7 +130,7 @@ int main(){
         //cout<<"number of nodes is :"<<number_of_nodes<<endl;
     }
     
-        dijkstra(1,number_of_nodes);
+        dijkstra(2,number_of_nodes);
     // puts("");
     // for (int i=0;i<vect.size();i++){
     //     cout<<vect[i].first<<" "<<vect[i].second.first<<" "<<vect[i].second.second<<endl;
@@ -137,27 +140,3 @@ int main(){
     
     
 }
-
-
-
-
-
-/*#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-
-int main(int argc, char** argv) {
-    //printf("Number of arguments: %d", argc);
-    if (argc != 4) {
-        printf("Usage: ./linkstate topofile messagefile changesfile\n");
-        return -1;
-    }
-
-    FILE *fpOut;
-    fpOut = fopen("output.txt", "w");
-    fclose(fpOut);
-    
-
-    return 0;
-}
-*/
