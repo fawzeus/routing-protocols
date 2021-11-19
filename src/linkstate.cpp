@@ -1,18 +1,23 @@
-#include <bits/stdc++.h>
+#include <bits/stdc++.h> // its anclude all c++ libraries
+
 using namespace std;
 
 
-int infinity = numeric_limits<int>::max();
-int graph [100][100];
+//global variables
+
+int graph [100][100]; //adjacency matrix
 vector<string> path ;
+
 int dist[100][100]; // The output array.  dist[i] will hold the shortest
     // distance from src to i
 
 bool sptSet[100]; // sptSet[i] will be true if vertex i is included in shortest
     // path tree or shortest distance from src to i is finalized
 
+//matrix that contains all paths
 string paths[100][100];
-/******************************************/
+
+
 
 int minDistance(int src,int dist[100][100], bool sptSet[] ,int number_of_nodes)
 {
@@ -28,15 +33,6 @@ int minDistance(int src,int dist[100][100], bool sptSet[] ,int number_of_nodes)
     return min_index;
 }
  
-// A utility function to print the constructed distance array
-void printSolution(int dist[] , int number_of_nodes)
-{
-    int V = number_of_nodes+1;
-    cout <<"Vertex \t Distance from Source" << endl;
-    for (int i = 1; i < V; i++)
-        cout  << i << " \t\t"<<dist[i]<< endl;
-}
-
 
 // Function that implements Dijkstra's single source shortest path algorithm
 // for a graph represented using adjacency matrix representation
@@ -48,7 +44,7 @@ void dijkstra(int src , int number_of_nodes)
  
     
  
-    // Initialize all distances as INFINITE and stpSet[] as false
+    // Initialize all distances as INFINITE , stpSet[] as false and paths as "" 
     
     for (int i = 1; i < V; i++){
         dist[src][i] = INT_MAX, sptSet[i] = false;
@@ -78,49 +74,74 @@ void dijkstra(int src , int number_of_nodes)
             if (!sptSet[v] && graph[u][v] && dist[src][u] != INT_MAX
                 && dist[src][u] + graph[u][v] < dist[src][v] ||(!sptSet[v] && graph[u][v] && dist[src][u] != INT_MAX
                 && dist[u] + graph[u][v] == dist[v] && u < path[v-1].back() - 0 )){
-                dist[src][v] = dist[src][u] + graph[u][v];
-                //cout<<"path u-1 "<<path[u-1]<<" u "<<u<<endl; 
+                dist[src][v] = dist[src][u] + graph[u][v]; 
                 path[v-1]= path[u-1]+" "+to_string(u);
                 paths[src][v]=paths[src][u]+" "+to_string(u);
                 }
     }
     path[src-1]=to_string(src);
     paths[src][src]=to_string(src);
-    // print the constructed distance array
-    //printSolution(dist,number_of_nodes);
-    //print the paths to each node
     
 }
-
-/*******************************************/
-
-
-
-
-
-
-
-
-
-// void dj(int src , int dest , int number_of_nodes  ){
-    
-//     set<int, greater<int> > visited;
-//     visited.insert(src);
-//     int distance[number_of_nodes+1];
-    
-//     for (int i=1; i<= number_of_nodes;i++){
-//         if (i==src) distance[i]=0;
-//         else  distance[i]=cost[src][i];
-//     }
-    
-    
-    
-    
-// }
 
 void linkstate(int number_of_nodes){
     for (int i=1;i<=number_of_nodes;i++){
         dijkstra(i,number_of_nodes);
+    }
+}
+
+void topology_entries(int number_of_nodes ,ofstream& output){
+    for (int i=1;i<=number_of_nodes;i++){
+        output<<"<topology entries for node "<<i<<">"<<endl;
+    }
+    output<<endl;
+}
+
+int fill_adjacency_matrix(ifstream& topofile){
+    int x,y,z,number_of_nodes=0;
+    while (topofile>>x>>y>>z){
+        //filling the adjacency matrix
+        graph[x][y]=z;
+        graph[y][x]=z; // adjancency matrix is symmetric
+        number_of_nodes = max(number_of_nodes,x);
+        number_of_nodes = max(number_of_nodes,y); //counting the number of nodes
+    }
+    return number_of_nodes;
+}
+
+void send_messages(FILE* messagefile,ofstream& output,char* msg){
+    int src,dest;
+    while (fscanf(messagefile, "%d %d ", &src, &dest) != EOF){
+        fgets(msg,30,messagefile);
+        if (dist[src][dest]<INT_MAX){
+            output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops "<<paths[src][dest]<<" message "<<msg<<endl;
+        }
+        else{
+            output<<"from "<<src<<" to "<<dest<<" cost infinite hops unreachable message "<<msg<<endl;
+        }
+    }
+    fseek(messagefile, 0, SEEK_SET);
+}
+
+void change_topology(FILE* changesfile,FILE* messagefile,ofstream& output,char* msg,int number_of_nodes){
+    int change,src,dest;
+    while (fscanf(changesfile, "%d %d %d", &src, &dest, &change) != EOF){
+        output<<endl;
+
+        if(change != -999){
+            //update the adjacency matrix
+            graph[src][dest]=graph[dest][src]=change;
+        }
+        else{
+            //update the adjacency matrix
+            //if change is -999 then thers is no route from x to y 
+            graph[src][dest]=graph[dest][src]=0;
+        }
+        //recreate the routing tables for each change
+        linkstate(number_of_nodes);
+        //read messages from messagefile and send them if possible
+        send_messages(messagefile,output,msg);
+        
     }
 }
 
@@ -136,84 +157,27 @@ int main(int argc, char** argv){
     int x,y,z;
     FILE* messagefile;
     FILE* changesfile;
-    ifstream topofile(argv[1]);
     char msg[100];
+
+    //open needed files
+    ifstream topofile(argv[1]);
     messagefile = fopen(argv[2], "r");
     changesfile = fopen(argv[3], "r");
-    //ifstream messagefile("messagefile.txt");
-    //ifstream changesfile("changesfile.txt");
     ofstream output("output.txt");
-    //cout<<infinity;
-    while (topofile>>x>>y>>z){
-        // cout<<x<<" "<<y<<" "<<z<<endl;
-        // vect.push_back(make_pair(x,make_pair(y,z)));
-        graph[x][y]=z;
-        graph[y][x]=z;
-        number_of_nodes = max(number_of_nodes,x);
-        number_of_nodes = max(number_of_nodes,y);
-        //cout<<"number of nodes is :"<<number_of_nodes<<endl;
-    }
-    for (int i=1;i<=number_of_nodes;i++){
-        output<<"<topology entries for node "<<i<<">"<<endl;
-    }
-    output<<endl;
-    
-    int src,dest;
+
+    //reading topology inputs and counting the number of nodes
+    number_of_nodes=fill_adjacency_matrix(topofile);
+    //printing topology entries
+    topology_entries(number_of_nodes , output);
+    //applying linkstate algorithm to fill routing tables using the initial topology
     linkstate(number_of_nodes);
-    while (fscanf(messagefile, "%d %d ", &src, &dest) != EOF){
-        fgets(msg,30,messagefile);
-        if (dist[src][dest]<INT_MAX){
-            output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops "<<paths[src][dest]<<" message "<<msg<<endl;
-        }
-        else{
-            output<<"from "<<src<<" to "<<dest<<" cost infinite hops unreachable message "<<msg<<endl;
-        }
-        //cout<<"from "<<src<<" to "<<dest<<endl;
-        
-        //printf("from %d to %d cost %d hops \n", src, dest, dist[src][dest]);
-        //printf("path from %d to %d is %s\n",src,dest,paths[src][dest]);
-        //output<<"path from "<<src<<" to "<<dest<<" is"<<paths[src][dest]<<endl;
-        
-        
-    }
-    fseek(messagefile, 0, SEEK_SET);
-    int change;
-    while (fscanf(changesfile, "%d %d %d", &src, &dest, &change) != EOF){
-        output<<endl;
-        if(change != -999){
-            graph[src][dest]=graph[dest][src]=change;
-        }
-        else{
-            graph[src][dest]=graph[dest][src]=0;
-        }
-        linkstate(number_of_nodes);
-        while (fscanf(messagefile, "%d %d ", &src, &dest) != EOF){
-            fgets(msg,30,messagefile);
-            if (dist[src][dest]<INT_MAX){
-                output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops "<<paths[src][dest]<<" message "<<msg<<endl;
-            }
-            else{
-                output<<"from "<<src<<" to "<<dest<<" cost infinite hops unreachable message "<<msg<<endl;
-            }
-            //cout<<"from "<<src<<" to "<<dest<<endl;
-            
-            //printf("from %d to %d cost %d hops \n", src, dest, dist[src][dest]);
-            //printf("path from %d to %d is %s\n",src,dest,paths[src][dest]);
-            //output<<"path from "<<src<<" to "<<dest<<" is"<<paths[src][dest]<<endl;
-            
-            
-        }
-        fseek(messagefile, 0, SEEK_SET);
-        
-    }
+
+    int src,dest;
+    //read messages from messagefile and send them if possible, according to initial topology
+    send_messages(messagefile,output,msg);
+    change_topology(changesfile,messagefile,output,msg,number_of_nodes);
+
+    //closing files
     fclose(messagefile);
-    fclose(changesfile);
-    // puts("");
-    // for (int i=0;i<vect.size();i++){
-    //     cout<<vect[i].first<<" "<<vect[i].second.first<<" "<<vect[i].second.second<<endl;
-    // }
-    
-    
-    
-    
+    fclose(changesfile);    
 }
