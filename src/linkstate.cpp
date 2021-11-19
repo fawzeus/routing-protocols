@@ -80,8 +80,8 @@ void dijkstra(int src , int number_of_nodes)
                 && dist[u] + graph[u][v] == dist[v] && u < path[v-1].back() - 0 )){
                 dist[src][v] = dist[src][u] + graph[u][v];
                 //cout<<"path u-1 "<<path[u-1]<<" u "<<u<<endl; 
-                path[v-1]= path[u-1]+to_string(u);
-                paths[src][v]=paths[src][u]+to_string(u);
+                path[v-1]= path[u-1]+" "+to_string(u);
+                paths[src][v]=paths[src][u]+" "+to_string(u);
                 }
     }
     path[src-1]=to_string(src);
@@ -130,10 +130,14 @@ int main(){
     int number_of_nodes = 0;
     int x,y,z;
     FILE* messagefile;
+    FILE* changesfile;
     ifstream topofile("topofile.txt");
+    char msg[100];
     //ifstream messagefile("messagefile.txt");
-    ifstream changesfile("changesfile.txt");
+    //ifstream changesfile("changesfile.txt");
     messagefile = fopen("messagefile.txt","r");
+    changesfile = fopen("changesfile.txt","r");
+    ofstream output("output.txt");
     //cout<<infinity;
     while (topofile>>x>>y>>z){
         // cout<<x<<" "<<y<<" "<<z<<endl;
@@ -144,17 +148,59 @@ int main(){
         number_of_nodes = max(number_of_nodes,y);
         //cout<<"number of nodes is :"<<number_of_nodes<<endl;
     }
+    for (int i=1;i<=number_of_nodes;i++){
+        output<<"<topology entries for node "<<i<<">"<<endl;
+    }
+    output<<endl;
     
     int src,dest;
-    
+    linkstate(number_of_nodes);
     while (fscanf(messagefile, "%d %d ", &src, &dest) != EOF){
+        fgets(msg,30,messagefile);
+        if (dist[src][dest]<INT_MAX){
+            output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops "<<paths[src][dest]<<" message "<<msg<<endl;
+        }
+        else{
+            output<<"from "<<src<<" to "<<dest<<" cost infinite hops unreachable message "<<msg<<endl;
+        }
         //cout<<"from "<<src<<" to "<<dest<<endl;
-        linkstate(number_of_nodes);
-        printf("from %d to %d cost %d hops \n", src, dest, dist[src][dest]);
+        
+        //printf("from %d to %d cost %d hops \n", src, dest, dist[src][dest]);
+        //printf("path from %d to %d is %s\n",src,dest,paths[src][dest]);
+        //output<<"path from "<<src<<" to "<<dest<<" is"<<paths[src][dest]<<endl;
         
         
     }
     fseek(messagefile, 0, SEEK_SET);
+    int change;
+    while (fscanf(changesfile, "%d %d %d", &src, &dest, &change) != EOF){
+        output<<endl;
+        if(change != -999){
+            graph[src][dest]=graph[dest][src]=change;
+        }
+        else{
+            graph[src][dest]=graph[dest][src]=0;
+        }
+        linkstate(number_of_nodes);
+        while (fscanf(messagefile, "%d %d ", &src, &dest) != EOF){
+            fgets(msg,30,messagefile);
+            if (dist[src][dest]<INT_MAX){
+                output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops "<<paths[src][dest]<<" message "<<msg<<endl;
+            }
+            else{
+                output<<"from "<<src<<" to "<<dest<<" cost infinite hops unreachable message "<<msg<<endl;
+            }
+            //cout<<"from "<<src<<" to "<<dest<<endl;
+            
+            //printf("from %d to %d cost %d hops \n", src, dest, dist[src][dest]);
+            //printf("path from %d to %d is %s\n",src,dest,paths[src][dest]);
+            //output<<"path from "<<src<<" to "<<dest<<" is"<<paths[src][dest]<<endl;
+            
+            
+        }
+        fseek(messagefile, 0, SEEK_SET);
+        
+    }
     // puts("");
     // for (int i=0;i<vect.size();i++){
     //     cout<<vect[i].first<<" "<<vect[i].second.first<<" "<<vect[i].second.second<<endl;
