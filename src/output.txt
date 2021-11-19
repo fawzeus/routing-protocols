@@ -1,0 +1,20 @@
+<topology entries for node 1>
+<topology entries for node 2>
+<topology entries for node 3>
+<topology entries for node 4>
+<topology entries for node 5>
+
+from 2 to 1 cost 6 hops  2 5 4 message here is a message from 2 to 1
+from 1 to 2 cost 6 hops  1 4 5 message here is a message from 1 to 2
+from 5 to 3 cost 7 hops  5 2 message here is a message from 5 to 3
+from 4 to 3 cost 8 hops  4 5 2 message here is a message from 4 to 3
+
+from 2 to 1 cost 6 hops  2 5 4 message here is a message from 2 to 1
+from 1 to 2 cost 6 hops  1 4 5 message here is a message from 1 to 2
+from 5 to 3 cost infinite hops unreachable message here is a message from 5 to 3
+from 4 to 3 cost infinite hops unreachable message here is a message from 4 to 3
+
+from 2 to 1 cost 6 hops  2 5 4 message here is a message from 2 to 1
+from 1 to 2 cost 6 hops  1 4 5 message here is a message from 1 to 2
+from 5 to 3 cost 5 hops  5 2 message here is a message from 5 to 3
+from 4 to 3 cost 6 hops  4 5 2 message here is a message from 4 to 3

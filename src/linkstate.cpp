@@ -124,19 +124,24 @@ void linkstate(int number_of_nodes){
     }
 }
 
-int main(){
+int main(int argc, char** argv){
     
-    
+    //printf("Number of arguments: %d", argc);
+    if (argc != 4) {
+        printf("Usage: ./distvec topofile messagefile changesfile\n");
+        return -1;
+    }
+
     int number_of_nodes = 0;
     int x,y,z;
     FILE* messagefile;
     FILE* changesfile;
-    ifstream topofile("topofile.txt");
+    ifstream topofile(argv[1]);
     char msg[100];
+    messagefile = fopen(argv[2], "r");
+    changesfile = fopen(argv[3], "r");
     //ifstream messagefile("messagefile.txt");
     //ifstream changesfile("changesfile.txt");
-    messagefile = fopen("messagefile.txt","r");
-    changesfile = fopen("changesfile.txt","r");
     ofstream output("output.txt");
     //cout<<infinity;
     while (topofile>>x>>y>>z){
@@ -201,6 +206,8 @@ int main(){
         fseek(messagefile, 0, SEEK_SET);
         
     }
+    fclose(messagefile);
+    fclose(changesfile);
     // puts("");
     // for (int i=0;i<vect.size();i++){
     //     cout<<vect[i].first<<" "<<vect[i].second.first<<" "<<vect[i].second.second<<endl;
