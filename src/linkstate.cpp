@@ -66,12 +66,13 @@ void dijkstra(int src , int number_of_nodes)
  
         // Update dist value of the adjacent vertices of the picked vertex.
         for (int v = 1; v < V; v++)
- 
+            
             // Update dist[v] only if is not in sptSet, there is an edge from
             // u to v, and total weight of path from src to  v through u is
             // smaller than current value of dist[v]
             if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX
-                && dist[u] + graph[u][v] < dist[v]){
+                && dist[u] + graph[u][v] < dist[v] ||(!sptSet[v] && graph[u][v] && dist[u] != INT_MAX
+                && dist[u] + graph[u][v] == dist[v] && u < path[v-1].back() - 0 )){
                 dist[v] = dist[u] + graph[u][v];
                 cout<<"path u-1 "<<path[u-1]<<" u "<<u<<endl; 
                 path[v-1]= path[u-1]+to_string(u);
@@ -80,6 +81,7 @@ void dijkstra(int src , int number_of_nodes)
     path[src-1]=to_string(src);
     // print the constructed distance array
     printSolution(dist,number_of_nodes);
+    //print the paths to each node
     puts("path\n\n");
     for(int i=0;i<path.size();i++){
         cout<<path[i]<<endl;
@@ -130,7 +132,7 @@ int main(){
         //cout<<"number of nodes is :"<<number_of_nodes<<endl;
     }
     
-        dijkstra(2,number_of_nodes);
+        dijkstra(1,number_of_nodes);
     // puts("");
     // for (int i=0;i<vect.size();i++){
     //     cout<<vect[i].first<<" "<<vect[i].second.first<<" "<<vect[i].second.second<<endl;
