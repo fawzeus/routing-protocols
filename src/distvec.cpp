@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
     FILE *fpOut = NULL;
     FILE *fpChange;
     FILE *fpMsg;
-    fpOut = fopen("output.txt", "w+");
+    fpOut = fopen("outputdiv.txt", "w+");
     if(fpOut == NULL){
         printf("cannot open output.txt");
         exit(1);
