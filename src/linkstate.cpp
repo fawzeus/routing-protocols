@@ -175,6 +175,7 @@ int main(int argc, char** argv){
     int src,dest;
     //read messages from messagefile and send them if possible, according to initial topology
     send_messages(messagefile,output,msg);
+    //change the topology for each change in the changesfile
     change_topology(changesfile,messagefile,output,msg,number_of_nodes);
 
     //closing files
