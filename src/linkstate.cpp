@@ -93,8 +93,8 @@ void topology_entries(int number_of_nodes ,FILE* topofile,ofstream& output){
     int x,y,z,out;
     while (fscanf(topofile,"%d %d %d",&x,&y,&z) != EOF ){
         
-        out=dist[x][y];
-        if (out == INT_MAX) out=-999;
+        out=graph[x][y];
+        if (out == 0 && x!=y) out=-999;
         output<<x<<" "<<y<<" "<<out<<endl;
     }
     fseek(topofile, 0, SEEK_SET);

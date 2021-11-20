@@ -7,7 +7,7 @@ from 2 to 1 cost 6 hops 2 5 4 message send this message from 2 to 1
 from 1 to 2 cost 6 hops 1 4 5 message send this message from 1 to 2
 from 5 to 3 cost 7 hops 5 2 message send this message from 5 to 3
 from 4 to 3 cost 8 hops 4 5 2 message send this message from 4 to 3
-1 2 6
+1 2 8
 2 3 -999
 2 5 4
 4 1 1
@@ -16,7 +16,7 @@ from 2 to 1 cost 6 hops 2 5 4 message send this message from 2 to 1
 from 1 to 2 cost 6 hops 1 4 5 message send this message from 1 to 2
 from 5 to 3 cost infinite hops unreachable message send this message from 5 to 3
 from 4 to 3 cost infinite hops unreachable message send this message from 4 to 3
-1 2 6
+1 2 8
 2 3 1
 2 5 4
 4 1 1
