@@ -120,7 +120,7 @@ void send_messages(FILE* messagefile,ofstream& output,char* msg){
     while (fscanf(messagefile, "%d %d ", &src, &dest) != EOF){
         fgets(msg,30,messagefile);
         if (dist[src][dest]<INT_MAX){
-            output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops "<<paths[src][dest]<<" message "<<msg<<endl;
+            output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops"<<paths[src][dest]<<" message "<<msg<<endl;
         }
         else{
             output<<"from "<<src<<" to "<<dest<<" cost infinite hops unreachable message "<<msg<<endl;
