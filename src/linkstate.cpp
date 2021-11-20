@@ -17,6 +17,8 @@ bool sptSet[100]; // sptSet[i] will be true if vertex i is included in shortest
 //matrix that contains all paths
 string paths[100][100];
 
+int start[100][100];
+
 
 
 int minDistance(int src,int dist[100][100], bool sptSet[] ,int number_of_nodes)
@@ -32,7 +34,7 @@ int minDistance(int src,int dist[100][100], bool sptSet[] ,int number_of_nodes)
  
     return min_index;
 }
- 
+
 
 // Function that implements Dijkstra's single source shortest path algorithm
 // for a graph represented using adjacency matrix representation
@@ -50,6 +52,8 @@ void dijkstra(int src , int number_of_nodes)
         dist[src][i] = INT_MAX, sptSet[i] = false;
         path.push_back("");
         paths[src][i]="";
+        if(graph[src][i]) start[src][i]=i;
+        else start[src][i]=0;
     }
     
  
@@ -74,12 +78,14 @@ void dijkstra(int src , int number_of_nodes)
                 && dist[src][u] + graph[u][v] < dist[src][v] ||(!sptSet[v] && graph[u][v] && dist[src][u] != INT_MAX
                 && dist[u] + graph[u][v] == dist[v] && u < path[v-1].back() - 0 )){
                 dist[src][v] = dist[src][u] + graph[u][v]; 
-                path[v-1]= path[u-1]+" "+to_string(u);
-                paths[src][v]=paths[src][u]+" "+to_string(u);
+                path[v-1] = path[u-1]+" "+to_string(u);
+                paths[src][v] =paths[src][u]+" "+to_string(u);
+                if(start[src][u]) start[src][v] = start[src][u];
                 }
     }
     path[src-1]=to_string(src);
     paths[src][src]=to_string(src);
+    start[src][src] = src;
     
 }
 
@@ -90,14 +96,18 @@ void linkstate(int number_of_nodes){
 }
 
 void topology_entries(int number_of_nodes ,FILE* topofile,ofstream& output){
-    int x,y,z,out;
-    while (fscanf(topofile,"%d %d %d",&x,&y,&z) != EOF ){
-        
-        out=graph[x][y];
-        if (out == 0 && x!=y) out=-999;
-        output<<x<<" "<<y<<" "<<out<<endl;
+    for(int i=1;i<=number_of_nodes;i++){
+        for(int j=1;j<=number_of_nodes;j++){
+            int start_path = start[i][j];
+            int distance = dist[i][j];
+            if (distance == INT_MAX){
+                start_path = -999;
+                distance = 999999;
+            }
+            output<<j<<" "<<start_path <<" "<<distance<<endl;
+        }
+        output<<endl;
     }
-    fseek(topofile, 0, SEEK_SET);
 }
 
 int fill_adjacency_matrix(FILE* topofile){
@@ -120,7 +130,8 @@ void send_messages(FILE* messagefile,ofstream& output,char* msg){
     while (fscanf(messagefile, "%d %d ", &src, &dest) != EOF){
         fgets(msg,30,messagefile);
         if (dist[src][dest]<INT_MAX){
-            output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops"<<paths[src][dest]<<" message "<<msg<<endl;
+            cout<<paths[src][dest]<<endl;
+            output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops"<<paths[src][dest]<<" "<<dest<<" message "<<msg<<endl;
         }
         else{
             output<<"from "<<src<<" to "<<dest<<" cost infinite hops unreachable message "<<msg<<endl;
@@ -175,12 +186,11 @@ int main(int argc, char** argv){
 
     //reading topology inputs and counting the number of nodes
     number_of_nodes=fill_adjacency_matrix(topofile);
-    //printing topology entries
-    topology_entries(number_of_nodes ,topofile,output);
     //applying linkstate algorithm to fill routing tables using the initial topology
     linkstate(number_of_nodes);
-
-    int src,dest;
+    //printing topology entries
+    topology_entries(number_of_nodes ,topofile,output);
+    
     //read messages from messagefile and send them if possible, according to initial topology
     send_messages(messagefile,output,msg);
     //change the topology for each change in the changesfile
