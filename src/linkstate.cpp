@@ -145,12 +145,14 @@ void change_topology(FILE* topofile,FILE* changesfile,FILE* messagefile,ofstream
     while (fscanf(changesfile, "%d %d %d", &src, &dest, &change) != EOF){
         if(change != -999){
             //update the adjacency matrix
-            graph[src][dest]=graph[dest][src]=change;
+            graph[src][dest]=change;
+            graph[dest][src]=change;
         }
         else{
             //update the adjacency matrix
             //if change is -999 then thers is no route from x to y 
-            graph[src][dest]=graph[dest][src]=0;
+            graph[src][dest]=0;
+            graph[dest][src]=0;
         }
         //recreate the routing tables for each change
         linkstate(number_of_nodes);
