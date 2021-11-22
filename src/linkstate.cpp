@@ -6,7 +6,6 @@ using namespace std;
 //global variables
 
 int graph [100][100]; //adjacency matrix
-vector<string> path ;
 
 int dist[100][100]; // The output array.  dist[src][i] will hold the shortest
     // distance from src to i
@@ -18,6 +17,7 @@ bool sptSet[100]; // sptSet[i] will be true if vertex i is included in shortest
 string paths[100][100];
 
 int start[100][100];
+int end_s[100][100];
 
 
 int minDistance(int src,int dist[100][100], bool sptSet[] ,int number_of_nodes)
@@ -27,7 +27,7 @@ int minDistance(int src,int dist[100][100], bool sptSet[] ,int number_of_nodes)
     // Initialize min value
     int min = INT_MAX, min_index;
  
-    for (int v = 0; v < V; v++)
+    for (int v = 1; v < V; v++)
         if (sptSet[v] == false && dist[src][v] <= min)
             min = dist[src][v], min_index = v;
  
@@ -39,7 +39,6 @@ int minDistance(int src,int dist[100][100], bool sptSet[] ,int number_of_nodes)
 // for a graph represented using adjacency matrix representation
 void dijkstra(int src , int number_of_nodes)
 {
-    path.clear();
     int V = number_of_nodes+1;
     
  
@@ -49,10 +48,11 @@ void dijkstra(int src , int number_of_nodes)
     
     for (int i = 1; i < V; i++){
         dist[src][i] = INT_MAX, sptSet[i] = false;
-        path.push_back("");
         paths[src][i]="";
         if(graph[src][i]) start[src][i]=i;
         else start[src][i]=0;
+        if(graph[src][i]) end_s[src][i]= src;
+        else end_s[src][i]=0;
     }
     
  
@@ -69,20 +69,21 @@ void dijkstra(int src , int number_of_nodes)
  
         // Update dist value of the adjacent vertices of the picked vertex.
         for (int v = 1; v < V; v++)
-            
+            {
+            //cout <<"graph ["<<u<<","<<v<<"] = "<<graph[u][v]<<endl;
             // Update dist[src][v] only if is not in sptSet, there is an edge from
             // u to v, and total weight of path from src to  v through u is
             // smaller than current value of dist[src][v]
-            if (!sptSet[v] && graph[u][v] && dist[src][u] != INT_MAX
-                && dist[src][u] + graph[u][v] < dist[src][v] ||(!sptSet[v] && graph[u][v] && dist[src][u] != INT_MAX
-                && dist[u] + graph[u][v] == dist[v] && u < path[v-1].back() - 0 )){
+            if (!sptSet[v] && (graph[u][v] && dist[src][u] != INT_MAX
+                && dist[src][u] + graph[u][v] < dist[src][v] || graph[u][v] && dist[src][u] != INT_MAX
+                && dist[src][u] + graph[u][v] == dist[src][v] && u < end_s[src][v])){
                 dist[src][v] = dist[src][u] + graph[u][v]; 
-                path[v-1] = path[u-1]+" "+to_string(u);
+                end_s[src][v]=u;
                 paths[src][v] =paths[src][u]+" "+to_string(u);
                 if(start[src][u]) start[src][v] = start[src][u];
                 }
+            }
     }
-    path[src-1]=to_string(src);
     paths[src][src]=to_string(src);
     start[src][src] = src;
     
