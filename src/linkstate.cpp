@@ -20,7 +20,6 @@ string paths[100][100];
 int start[100][100];
 
 
-
 int minDistance(int src,int dist[100][100], bool sptSet[] ,int number_of_nodes)
 {
    
@@ -101,12 +100,12 @@ void topology_entries(int number_of_nodes ,FILE* topofile,ofstream& output){
             int start_path = start[i][j];
             int distance = dist[i][j];
             if (distance == INT_MAX){
+                continue;
                 start_path = -999;
                 distance = 999999;
             }
             output<<j<<" "<<start_path <<" "<<distance<<endl;
         }
-        output<<endl;
     }
 }
 
@@ -131,7 +130,7 @@ void send_messages(FILE* messagefile,ofstream& output,char* msg){
         fgets(msg,30,messagefile);
         if (dist[src][dest]<INT_MAX){
             cout<<paths[src][dest]<<endl;
-            output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops"<<paths[src][dest]<<" "<<dest<<" message "<<msg<<endl;
+            output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops"<<paths[src][dest]<<" message "<<msg<<endl;
         }
         else{
             output<<"from "<<src<<" to "<<dest<<" cost infinite hops unreachable message "<<msg<<endl;
