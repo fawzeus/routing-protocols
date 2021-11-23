@@ -1,102 +1,75 @@
 1 1 0
-2 4 6
-3 4 9
-4 4 1
-5 4 2
-
-1 5 6
-2 2 0
-3 3 3
-4 5 5
-5 5 4
-
-1 2 9
-2 2 3
-3 3 0
-4 2 8
-5 2 7
+2 2 1
+3 2 3
 
 1 1 1
-2 5 5
-3 5 8
-4 4 0
-5 5 1
+2 2 0
+3 3 2
 
-1 4 2
-2 2 4
-3 2 7
-4 4 1
-5 5 0
+1 2 3
+2 2 2
+3 3 0
 
-from 2 to 1 cost 6 hops 2 5 4 1 message send this message from 2 to 1
-from 1 to 2 cost 6 hops 1 4 5 2 message send this message from 1 to 2
-from 5 to 3 cost 7 hops 5 2 3 message send this message from 5 to 3
-from 4 to 3 cost 8 hops 4 5 2 3 message send this message from 4 to 3
+from 1 to 2 cost 1 hops 1 2 message send this message from 1 to 2
+from 2 to 3 cost 2 hops 2 3 message send this message from 2 to 3
+from 1 to 3 cost 3 hops 1 2 3 message send this message from 1 to 3
 1 1 0
-2 4 6
+2 -999 999999
 3 -999 999999
-4 4 1
-5 4 2
 
-1 5 6
+1 -999 999999
+2 2 0
+3 3 2
+
+1 -999 999999
+2 2 2
+3 3 0
+
+from 1 to 2 cost infinite hops unreachable message send this message from 1 to 2
+from 2 to 3 cost 2 hops 2 3 message send this message from 2 to 3
+from 1 to 3 cost infinite hops unreachable message send this message from 1 to 3
+1 1 0
+2 -999 999999
+3 -999 999999
+
+1 -999 999999
 2 2 0
 3 -999 999999
-4 5 5
-5 5 4
 
 1 -999 999999
 2 -999 999999
 3 3 0
-4 -999 999999
-5 -999 999999
 
-1 1 1
-2 5 5
-3 -999 999999
-4 4 0
-5 5 1
-
-1 4 2
-2 2 4
-3 -999 999999
-4 4 1
-5 5 0
-
-from 2 to 1 cost 6 hops 2 5 4 1 message send this message from 2 to 1
-from 1 to 2 cost 6 hops 1 4 5 2 message send this message from 1 to 2
-from 5 to 3 cost infinite hops unreachable message send this message from 5 to 3
-from 4 to 3 cost infinite hops unreachable message send this message from 4 to 3
+from 1 to 2 cost infinite hops unreachable message send this message from 1 to 2
+from 2 to 3 cost infinite hops unreachable message send this message from 2 to 3
+from 1 to 3 cost infinite hops unreachable message send this message from 1 to 3
 1 1 0
-2 4 6
-3 4 7
-4 4 1
-5 4 2
-
-1 5 6
-2 2 0
-3 3 1
-4 5 5
-5 5 4
-
-1 2 7
 2 2 1
-3 3 0
-4 2 6
-5 2 5
+3 -999 999999
 
 1 1 1
-2 5 5
-3 5 6
-4 4 0
-5 5 1
+2 2 0
+3 -999 999999
 
-1 4 2
-2 2 4
-3 2 5
-4 4 1
-5 5 0
+1 -999 999999
+2 -999 999999
+3 3 0
 
-from 2 to 1 cost 6 hops 2 5 4 1 message send this message from 2 to 1
-from 1 to 2 cost 6 hops 1 4 5 2 message send this message from 1 to 2
-from 5 to 3 cost 5 hops 5 2 3 message send this message from 5 to 3
-from 4 to 3 cost 6 hops 4 5 2 3 message send this message from 4 to 3
+from 1 to 2 cost 1 hops 1 2 message send this message from 1 to 2
+from 2 to 3 cost infinite hops unreachable message send this message from 2 to 3
+from 1 to 3 cost infinite hops unreachable message send this message from 1 to 3
+1 1 0
+2 2 1
+3 2 3
+
+1 1 1
+2 2 0
+3 3 2
+
+1 2 3
+2 2 2
+3 3 0
+
+from 1 to 2 cost 1 hops 1 2 message send this message from 1 to 2
+from 2 to 3 cost 2 hops 2 3 message send this message from 2 to 3
+from 1 to 3 cost 3 hops 1 2 3 message send this message from 1 to 3

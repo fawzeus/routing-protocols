@@ -130,7 +130,7 @@ void send_messages(FILE* messagefile,ofstream& output,char* msg){
     while (fscanf(messagefile, "%d %d ", &src, &dest) != EOF){
         fgets(msg,30,messagefile);
         if (dist[src][dest]<INT_MAX){
-            cout<<paths[src][dest]<<endl;
+            //cout<<paths[src][dest]<<endl;
             output<<"from "<<src<<" to "<<dest<<" cost "<<dist[src][dest]<<" hops"<<paths[src][dest]<<" message "<<msg<<endl;
         }
         else{
@@ -144,7 +144,7 @@ void change_topology(FILE* topofile,FILE* changesfile,FILE* messagefile,ofstream
     int change,src,dest;
     while (fscanf(changesfile, "%d %d %d", &src, &dest, &change) != EOF){
         if(change != -999){
-            //update the adjacency matrix
+            //uspdate the adjacency matrix
             graph[src][dest]=change;
             graph[dest][src]=change;
         }
